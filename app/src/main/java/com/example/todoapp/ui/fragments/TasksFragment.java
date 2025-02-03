@@ -1,6 +1,9 @@
 package com.example.todoapp.ui.fragments;
 
+import static android.content.ContentValues.TAG;
+
 import android.content.DialogInterface;
+import android.graphics.Canvas;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -9,11 +12,13 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,6 +32,7 @@ import com.example.todoapp.model.Task;
 import com.example.todoapp.ui.adapters.TasksAdapter;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.ArrayList;
@@ -51,6 +57,7 @@ public class TasksFragment extends Fragment {
     private RecyclerView recyclerView;
     private TextView emptyTasksText;
     private FloatingActionButton addTaskButton;
+    private TasksAdapter adapter = new TasksAdapter();
 
     public TasksFragment() {
         // Required empty public constructor
@@ -87,13 +94,7 @@ public class TasksFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-
-
-        tasksViewModel = new ViewModelProvider(this).get(TasksViewModel.class);
-
         View view = inflater.inflate(R.layout.fragment_tasks, container, false);
-
-        TasksAdapter adapter = new TasksAdapter();
 
         emptyTasksText = view.findViewById(R.id.empty_tasks_text);
 
@@ -116,9 +117,11 @@ public class TasksFragment extends Fragment {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
 
-
-                                    AppRepository.tasks.getValue().add(new Task(taskTitle.getText().toString()));
-                                    adapter.notifyItemInserted(AppRepository.tasks.getValue().size());
+                                    AppRepository.tasks.getValue().add(0, new Task(taskTitle.getText().toString()));
+                                    adapter.notifyItemInserted(0);
+                                    adapter.notifyItemRangeChanged(0, adapter.getItemCount());
+                                    recyclerView.scrollToPosition(0);
+                                    updateTasks();
                                     dialogInterface.dismiss();
 
                             }
@@ -175,38 +178,128 @@ public class TasksFragment extends Fragment {
             }
         });
 
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
+        itemTouchHelper.attachToRecyclerView(recyclerView);
+
+
+
+
 
         return view;
     }
+
+    private Task deletedTask = null;
+    private Snackbar snackbar;
+
+    ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
+        @Override
+        public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+            return false;
+        }
+
+        @Override
+        public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+
+            int position = viewHolder.getAdapterPosition();
+
+            if (direction == ItemTouchHelper.LEFT) {
+
+                deletedTask = AppRepository.tasks.getValue().get(position);
+                Log.d(TAG, "onSwiped: " + deletedTask);
+                AppRepository.tasks.getValue().remove(position);
+                adapter.notifyItemRemoved(position);
+                adapter.notifyItemRangeChanged(position, AppRepository.tasks.getValue().size());
+                updateTasks();
+
+                View rootView = getView();
+
+                if (rootView != null){
+
+                    snackbar = Snackbar.make(rootView, deletedTask.getText(), Snackbar.LENGTH_LONG)
+                            .setAnchorView(getActivity().findViewById(R.id.bottom_nav))
+                            .setAction("Undo", new View.OnClickListener() {
+                                @Override
+
+                                public void onClick(View view) {
+
+                                    if (getContext() == null) {
+
+                                        return;
+
+                                    }
+
+                                    AppRepository.tasks.getValue().add(position, new Task(deletedTask.getText(), deletedTask.isDone()));
+                                    adapter.notifyItemInserted(position);
+                                    recyclerView.scrollToPosition(position);
+                                    updateTasks();
+
+                                }
+                            })
+                            .setText("1 Task Deleted");
+
+                    snackbar.show();
+
+                }
+            }
+        }
+
+        @Override
+        public void onChildDraw(@NonNull Canvas c, @NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
+            super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
+
+
+
+        }
+    };
+
+
 
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState){
 
         super.onViewCreated(view, savedInstanceState);
+        updateTasks();
+
+    }
+
+    void updateTasks(){
 
         tasksViewModel = new ViewModelProvider(this).get(TasksViewModel.class);
-
         tasksViewModel.getTasks().observe(getViewLifecycleOwner(), new Observer<ArrayList<Task>>() {
 
-           @Override
+            @Override
             public void onChanged(ArrayList<Task> tasks) {
 
-               if (tasks.isEmpty()) {
+                if (tasks.isEmpty()) {
 
-                   emptyTasksText.setVisibility(View.VISIBLE);
-                   recyclerView.setVisibility(View.GONE);
-
-
-               } else {
-
-                   emptyTasksText.setVisibility(View.GONE);
-                   recyclerView.setVisibility(View.VISIBLE);
-
-               }
+                    emptyTasksText.setVisibility(View.VISIBLE);
+                    recyclerView.setVisibility(View.GONE);
 
 
-           }
+                } else {
+
+                    emptyTasksText.setVisibility(View.GONE);
+                    recyclerView.setVisibility(View.VISIBLE);
+
+                }
+
+
+            }
         });
+
+    }
+
+    @Override
+    public void onPause(){
+
+        super.onPause();
+
+        if (snackbar != null){
+
+            snackbar.dismiss();
+
+        }
+
     }
 
 }

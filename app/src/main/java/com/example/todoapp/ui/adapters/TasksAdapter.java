@@ -10,7 +10,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -44,8 +43,18 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder> 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
-        Task item = localDataSet.get(position);
-        holder.getItemText().setText(localDataSet.get(position).getText());
+        String itemText = localDataSet.get(position).getText();
+
+        if (itemText.length() > 24){
+
+            holder.getItemText().setText(itemText.substring(0, 24) + " ..." );
+
+        } else {
+
+            holder.getItemText().setText(itemText);
+        }
+
+
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -97,7 +106,7 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder> 
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
 
-                                localDataSet.get(position).setText(taskTitle.getText().toString());
+                                item.setText(taskTitle.getText().toString());
                                 notifyItemChanged(position);
                                 AppRepository.tasks.setValue(localDataSet);
                                 dialogInterface.dismiss();
@@ -167,7 +176,9 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder> 
 
                 return false;
             }
+
         });
+
     }
 
     @Override

@@ -16,10 +16,6 @@ public class ToDoApp extends Application {
 
 
         ArrayList<Task> tasks = new ArrayList<>();
-        tasks.add(new Task("Task 1"));
-        tasks.add(new Task("Task 2"));
-        tasks.add(new Task("Task 3"));
-
         AppRepository.tasks.setValue(tasks);
 
     }

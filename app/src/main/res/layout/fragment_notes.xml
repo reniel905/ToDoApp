@@ -42,12 +42,12 @@
             android:layout_gravity="center"
             android:text="Empty Notes."
             android:textAlignment="center"
-            android:textSize="12sp" />
+            android:textSize="16sp" />
 
     </LinearLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/floatingActionButton"
+        android:id="@+id/add_note_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"

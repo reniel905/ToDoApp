@@ -1,11 +1,11 @@
 package com.example.todoapp.model;
 
-public class Notes {
+public class Note {
 
     private String title;
     private String description;
 
-    public Notes(String title, String description) {
+    public Note(String title, String description) {
         this.title = title;
         this.description = description;
     }
