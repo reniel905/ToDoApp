@@ -16,6 +16,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/edit_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Title" />
@@ -32,7 +33,7 @@
         app:layout_constraintTop_toBottomOf="@+id/textInputLayout">
 
         <EditText
-            android:id="@+id/editTextTextMultiLine2"
+            android:id="@+id/edit_subtitle"
             android:layout_width="match_parent"
             android:layout_height="248dp"
             android:gravity="start|top"

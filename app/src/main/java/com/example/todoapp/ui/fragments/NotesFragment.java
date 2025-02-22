@@ -5,18 +5,28 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.FloatingWindow;
 import androidx.navigation.Navigation;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.example.todoapp.R;
+import com.example.todoapp.localdata.AppRepository;
+import com.example.todoapp.model.Note;
+import com.example.todoapp.ui.adapters.NotesAdapter;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
+
+import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -34,6 +44,12 @@ public class NotesFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
+
+    private TextInputEditText noteTitle;
+    private EditText noteSubtitle;
+    private TextView emptyNotestText;
+    private RecyclerView recyclerView;
+    private NotesAdapter notesAdapter;
     private NotesViewModel notesViewModel;
     private FloatingActionButton addNoteButton;
 
@@ -75,6 +91,13 @@ public class NotesFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_notes, container, false);
 
+        notesAdapter = new NotesAdapter();
+
+        recyclerView = view.findViewById(R.id.notes_list);
+        recyclerView.setAdapter(notesAdapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        emptyNotestText = view.findViewById(R.id.empty_notes_text);
 
         addNoteButton = view.findViewById(R.id.add_note_button);
         addNoteButton.setOnClickListener(new View.OnClickListener() {
@@ -84,8 +107,8 @@ public class NotesFragment extends Fragment {
                 View view1 = LayoutInflater.from(getContext()).inflate(R.layout.add_note_layout, null);
 
 
-                TextInputEditText noteTitle = view.findViewById(R.id.note_title);
-                EditText noteSubtitle = view.findViewById(R.id.note_subtitle);
+                noteTitle = view.findViewById(R.id.edit_title);
+                noteSubtitle = view.findViewById(R.id.edit_subtitle);
 
                 AlertDialog alertDialog = new MaterialAlertDialogBuilder(getContext())
                         .setView(view1)
@@ -94,7 +117,12 @@ public class NotesFragment extends Fragment {
                             public void onClick(DialogInterface dialogInterface, int i) {
 
 
-
+                                AppRepository.notes.getValue().add(new Note(noteTitle.getText().toString(), noteSubtitle.getText().toString()));
+                                notesAdapter.notifyItemInserted(0);
+                                notesAdapter.notifyItemRangeChanged(0, notesAdapter.getItemCount());
+                                recyclerView.scrollToPosition(0);
+                                updateNotes();
+                                dialogInterface.dismiss();
 
 
                             }
@@ -116,5 +144,28 @@ public class NotesFragment extends Fragment {
 
 
         return view;
+    }
+
+    void updateNotes(){
+
+        notesViewModel = new ViewModelProvider(this).get(NotesViewModel.class);
+        notesViewModel.getNotes().observe(getViewLifecycleOwner(), new Observer<ArrayList<Note>>() {
+            @Override
+            public void onChanged(ArrayList<Note> notes) {
+
+
+                if (notes.isEmpty()){
+
+                    emptyNotestText.setVisibility(View.VISIBLE);
+                    recyclerView.setVisibility(View.GONE);
+
+                } else {
+
+                    emptyNotestText.setVisibility(View.GONE);
+                    recyclerView.setVisibility(View.VISIBLE);
+
+                }
+            }
+        });
     }
 }
