@@ -11,6 +11,12 @@ public class Note {
     }
 
     public String getTitle() {
+
+        if (title.isEmpty()) {
+
+            this.title = "Untitled";
+
+        }
         return title;
     }
 

@@ -3,19 +3,19 @@ package com.example.todoapp.ui.fragments;
 import android.content.DialogInterface;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.FloatingWindow;
-import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.todoapp.R;
@@ -46,8 +46,8 @@ public class NotesFragment extends Fragment {
 
 
     private TextInputEditText noteTitle;
-    private EditText noteSubtitle;
-    private TextView emptyNotestText;
+    private TextInputEditText noteSubtitle;
+    private LinearLayout emptyNotesText;
     private RecyclerView recyclerView;
     private NotesAdapter notesAdapter;
     private NotesViewModel notesViewModel;
@@ -97,7 +97,7 @@ public class NotesFragment extends Fragment {
         recyclerView.setAdapter(notesAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        emptyNotestText = view.findViewById(R.id.empty_notes_text);
+        emptyNotesText = view.findViewById(R.id.empty_notes_text);
 
         addNoteButton = view.findViewById(R.id.add_note_button);
         addNoteButton.setOnClickListener(new View.OnClickListener() {
@@ -106,9 +106,8 @@ public class NotesFragment extends Fragment {
 
                 View view1 = LayoutInflater.from(getContext()).inflate(R.layout.add_note_layout, null);
 
-
-                noteTitle = view.findViewById(R.id.edit_title);
-                noteSubtitle = view.findViewById(R.id.edit_subtitle);
+                noteTitle = view1.findViewById(R.id.edit_title);
+                noteSubtitle = view1.findViewById(R.id.edit_subtitle);
 
                 AlertDialog alertDialog = new MaterialAlertDialogBuilder(getContext())
                         .setView(view1)
@@ -117,7 +116,7 @@ public class NotesFragment extends Fragment {
                             public void onClick(DialogInterface dialogInterface, int i) {
 
 
-                                AppRepository.notes.getValue().add(new Note(noteTitle.getText().toString(), noteSubtitle.getText().toString()));
+                                AppRepository.notes.getValue().add(0, new Note(noteTitle.getText().toString(), noteSubtitle.getText().toString()));
                                 notesAdapter.notifyItemInserted(0);
                                 notesAdapter.notifyItemRangeChanged(0, notesAdapter.getItemCount());
                                 recyclerView.scrollToPosition(0);
@@ -146,6 +145,13 @@ public class NotesFragment extends Fragment {
         return view;
     }
 
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        updateNotes();
+
+    }
+
     void updateNotes(){
 
         notesViewModel = new ViewModelProvider(this).get(NotesViewModel.class);
@@ -153,15 +159,14 @@ public class NotesFragment extends Fragment {
             @Override
             public void onChanged(ArrayList<Note> notes) {
 
-
                 if (notes.isEmpty()){
 
-                    emptyNotestText.setVisibility(View.VISIBLE);
+                    emptyNotesText.setVisibility(View.VISIBLE);
                     recyclerView.setVisibility(View.GONE);
 
                 } else {
 
-                    emptyNotestText.setVisibility(View.GONE);
+                    emptyNotesText.setVisibility(View.GONE);
                     recyclerView.setVisibility(View.VISIBLE);
 
                 }

@@ -42,7 +42,7 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
-    implementation("androidx.navigation:navigation-fragment:2.8.5")
-    implementation("androidx.navigation:navigation-ui:2.8.5")
+    implementation(libs.navigation.fragment.v287)
+    implementation(libs.navigation.ui.v287)
 
 }

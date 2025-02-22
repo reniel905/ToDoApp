@@ -1,22 +1,26 @@
 package com.example.todoapp.ui.adapters;
 
+import android.content.DialogInterface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.todoapp.R;
 import com.example.todoapp.localdata.AppRepository;
 import com.example.todoapp.model.Note;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.ArrayList;
 
 public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> {
 
-    private ArrayList<Note> localDataSet = AppRepository.notes.getValue();
+    private final ArrayList<Note> localDataSet = AppRepository.notes.getValue();
 
     public static class ViewHolder extends RecyclerView.ViewHolder{
 
@@ -46,7 +50,7 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
     public NotesAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.list_item_layout, parent, false);
+                .inflate(R.layout.note_item_layout, parent, false);
 
         return new ViewHolder(view);
     }
@@ -57,14 +61,56 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
         String title = localDataSet.get(position).getTitle();
         String subtitle = localDataSet.get(position).getDescription();
 
-        holder.noteTitle.setText(title);
-        holder.noteSubtitle.setText(subtitle);
+        holder.getNoteTitle().setText(title);
+        holder.getNoteSubtitle().setText(subtitle);
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick(View v) {
 
+                Note item = localDataSet.get(position);
+                View view1 = LayoutInflater.from(v.getContext()).inflate(R.layout.add_note_layout, null);
+                TextInputEditText noteTitle = view1.findViewById(R.id.edit_title);
+                TextInputEditText noteSubtitle = view1.findViewById(R.id.edit_subtitle);
 
+                noteTitle.setText(item.getTitle());
+                noteSubtitle.setText(item.getDescription());
+
+                AlertDialog alertDialog = new MaterialAlertDialogBuilder(v.getContext())
+                        .setView(view1)
+                        .setTitle("Edit Note")
+                        .setPositiveButton("Save", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                                item.setTitle(noteTitle.getText().toString());
+                                item.setDescription(noteSubtitle.getText().toString());
+                                notifyItemChanged(position);
+                                AppRepository.notes.setValue(localDataSet);
+                                dialog.dismiss();
+                            }
+                        }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                                dialog.dismiss();
+
+                            }
+                        }).setNeutralButton("Delete", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                                localDataSet.remove(item);
+                                notifyItemRemoved(position);
+                                notifyDataSetChanged();
+                                AppRepository.notes.setValue(localDataSet);
+                                dialog.dismiss();
+
+                            }
+                        })
+                        .create();
+
+                alertDialog.show();
 
             }
         });
