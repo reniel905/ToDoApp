@@ -1,6 +1,9 @@
 package com.example.todoapp;
 
 import android.app.Application;
+import android.os.Bundle;
+
+import androidx.annotation.Nullable;
 
 import com.example.todoapp.localdata.AppRepository;
 import com.example.todoapp.model.Note;

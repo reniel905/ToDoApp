@@ -44,5 +44,5 @@ dependencies {
     androidTestImplementation(libs.espresso.core)
     implementation(libs.navigation.fragment.v287)
     implementation(libs.navigation.ui.v287)
-
+    implementation("androidx.activity:activity:1.10.0")
 }

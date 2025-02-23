@@ -4,20 +4,38 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.fragments.TasksFragment">
+    tools:context=".ui.fragments.TasksFragment"
+    android:background="@null">
 
-    <TextView
-        android:id="@+id/textView"
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:text="Tasks"
-        android:textAlignment="textStart"
-        android:textSize="64sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:id="@+id/Title"
+        android:elevation="0dp"
+        >
+        <LinearLayout
+            android:layout_width="350dp"
+            android:layout_height="match_parent"
+            android:background="@drawable/todo_titlebar"
+            android:backgroundTint="@null">
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                android:fontFamily="@font/gabarito_semibold"
+                android:text="Tasks"
+                android:textAlignment="textStart"
+                android:textSize="64sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:textColor="@color/white"/>
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/tasks_list"
@@ -25,10 +43,21 @@
         android:layout_height="0dp"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/Title"
+        android:background="@null"
+        android:backgroundTint="@null"/>
+    <LinearLayout
+        android:id="@+id/empty_notes_text"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        android:gravity="center"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView" />
-
+        app:layout_constraintTop_toBottomOf="@+id/Title"
+        android:background="@color/white"
+        >
         <TextView
             android:gravity="center"
             android:id="@+id/empty_tasks_text"
@@ -41,7 +70,9 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView"/>
+            app:layout_constraintTop_toBottomOf="@+id/Title"/>
+    </LinearLayout>
+
 
 
 

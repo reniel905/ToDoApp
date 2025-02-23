@@ -5,28 +5,48 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.fragments.NotesFragment">
-
-    <TextView
-        android:id="@+id/textView"
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:text="Notes"
-        android:textAlignment="textStart"
-        android:textSize="64sp"
-        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/notes_list"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:id="@+id/Title"
+        android:elevation="0dp"
+        >
+        <LinearLayout
+            android:layout_width="350dp"
+            android:layout_height="match_parent"
+            android:background="@drawable/todo_titlebar"
+            android:backgroundTint="@null"
+            android:elevation="0dp">
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                android:fontFamily="@font/gabarito_semibold"
+                android:text="Notes"
+                android:textAlignment="textStart"
+                android:textSize="64sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:textColor="@color/white"/>
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/notes_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView" />
+
+        app:layout_constraintTop_toBottomOf="@+id/Title" />
 
     <LinearLayout
         android:id="@+id/empty_notes_text"
@@ -37,7 +57,9 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView">
+        app:layout_constraintTop_toBottomOf="@+id/Title"
+        android:background="@color/white"
+        >
 
 
         <TextView
@@ -60,6 +82,8 @@
         android:src="@drawable/add_icon"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
+
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

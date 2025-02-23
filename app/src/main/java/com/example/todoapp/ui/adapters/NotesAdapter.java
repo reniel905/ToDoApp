@@ -1,6 +1,7 @@
 package com.example.todoapp.ui.adapters;
 
 import android.content.DialogInterface;
+import android.icu.text.CaseMap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,8 @@ import com.example.todoapp.localdata.AppRepository;
 import com.example.todoapp.model.Note;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputEditText;
+
+import com.example.todoapp.ui.fragments.NotesFragment;
 
 import java.util.ArrayList;
 
@@ -78,8 +81,8 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
 
                 AlertDialog alertDialog = new MaterialAlertDialogBuilder(v.getContext())
                         .setView(view1)
-                        .setTitle("Edit Note")
                         .setPositiveButton("Save", new DialogInterface.OnClickListener() {
+
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
 

@@ -112,7 +112,6 @@ public class TasksFragment extends Fragment {
                 taskTitle.setHint("New Task");
                 AlertDialog addTaskDialog = new MaterialAlertDialogBuilder(getContext())
                         .setView(view1)
-                        .setTitle("Create")
                         .setPositiveButton("Save", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {

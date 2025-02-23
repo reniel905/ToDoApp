@@ -3,7 +3,17 @@
     <style name="Base.Theme.ToDoApp" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="boxStrokeColor">@color/boxes</item>
     </style>
 
-    <style name="Theme.ToDoApp" parent="Base.Theme.ToDoApp" />
+    <style name="Theme.ToDoApp" parent="Base.Theme.ToDoApp">
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+
+    </style>
+    <style name="Customizabilitism">
+        <item name="boxStrokeColor">@color/boxes</item>
+    </style>
 </resources>

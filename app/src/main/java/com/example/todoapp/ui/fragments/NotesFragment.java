@@ -109,6 +109,8 @@ public class NotesFragment extends Fragment {
                 noteTitle = view1.findViewById(R.id.edit_title);
                 noteSubtitle = view1.findViewById(R.id.edit_subtitle);
 
+
+
                 AlertDialog alertDialog = new MaterialAlertDialogBuilder(getContext())
                         .setView(view1)
                         .setPositiveButton("Save", new DialogInterface.OnClickListener() {
@@ -173,4 +175,6 @@ public class NotesFragment extends Fragment {
             }
         });
     }
+
+
 }

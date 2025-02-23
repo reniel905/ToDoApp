@@ -22,6 +22,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="6dp"
+            android:fontFamily="@font/gabarito_semibold"
             android:text="Title"
             android:textSize="32sp"
             android:textStyle="bold" />
@@ -31,6 +32,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="6dp"
+            android:fontFamily="sans-serif"
             android:text="Subtitle" />
 
 
